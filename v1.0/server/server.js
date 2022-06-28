@@ -1,3 +1,4 @@
+var colors = require('colors');
 const io = require('socket.io')(4000, {
     cors: {
         origin: '*'
@@ -14,24 +15,19 @@ function getActiveRooms() {
 
 io.on("connection", socket => {
     socket.on("message-from-react", (value) => {
-        console.log("from react: ", value)
+        console.log("from react: ".bgRed, value)
         if (value.role === 'I created') {
-            socket.join(value.room)
+            if(value.players.length === 1){
+                socket.join(value.room)
+            }else{
+                socket.to(value.room).emit('message-from-nodejs', { to: 'I joined', action: 'newData', message: {game:value.game,players:value.players} })
+            }
         }
         if (value.role === 'I joined') {
             if (value.joined === false) {
                 if (getActiveRooms().includes(value.room)) {
-                    let newPlayerObj = {
-                        id: value.id,
-                        socketId: value.socketId,
-                        username: value.username,
-                        room: value.room,
-                        role: value.role,
-                        finished: value.finished,
-                        joined:value.joined,
-                    }
                     socket.join(value.room)
-                    socket.to(value.room).emit('message-from-nodejs', { to: 'I created', action: 'newPlayer', message: newPlayerObj })
+                    socket.to(value.room).emit('message-from-nodejs', { to: 'I created', action: 'newPlayer', message: value })
                 } else {
                     socket.nsp.to(value.socketId).emit('message-from-nodejs', { to: 'I joined', action: 'whyIDidntJoin', message: 'Wrong room id' })
                 }

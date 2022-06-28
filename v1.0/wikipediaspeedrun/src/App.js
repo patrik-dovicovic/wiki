@@ -16,11 +16,18 @@ let GameDataObj = {
   role: "",
   finished: false,
   players: [],
-  game: [
-    
-  ],
-  joined:false,
-  creatorID:'',
+  game: {
+    started: false,
+    startArticle: '',
+    finishArticle: '',
+    const: {
+      searchUrl: 'https://en.wikipedia.org/w/api.php?action=opensearch&origin=*&format=json&search=',
+      contentUrl: 'https://en.wikipedia.org/w/index.php?title=',
+      afterContentUrl: '&action=render',
+    }
+  },
+  joined: false,
+  creatorID: '',
 
 }
 
@@ -34,74 +41,92 @@ function App() {
     setGameData(old => ({ ...old, ...{ socketId: socket.id } }))
   });
 
-  socket.on("message-from-nodejs", (value) => {
-    // console.log("new message from nodejs: ",value)
-    //messages to joined
-    if (value.to === 'I joined' && GameData.role === value.to) {
-      //check if room id is correct
-      if (value.action === 'whyIDidntJoin') {
-        console.log(value.message)
-      }
-    }
-    //messages to creator
-    if (value.to === 'I created' && GameData.role === value.to) {
-      //new player
-      if (value.action === 'newPlayer') {
-        let nameIsPushed = false
-        GameDataObj.players.forEach(e => {
-          if (e.id === value.message.id) {
-            nameIsPushed = true
-          }
-        });
-        //if !nameIsPushed than push and change usestate
-        if (!nameIsPushed) {
-
-          GameDataObj.players.push(value.message)
-          setGameData(GameDataObj)
-        }
-      }
-    }
-  })
-
+  //when GameData change
   useEffect(() => {
-    const withoutSocket = (({ socket, ...o }) => o)(GameData)
     GameDataObj = GameData
-
-
-    if(GameData.role === 'I created'){
-      let gamedataPlayersLength = 0
-      GameData.players.forEach(e => {
-        gamedataPlayersLength++
-      });
-      // console.log("players: ",gamedataPlayersLength)
-      if(gamedataPlayersLength === 0){
+    console.log(GameData)
+    // when GameData change and i am creator
+    if ((GameData.role === 'I created') && (GameData.room !== '') && (GameData.username !== '') && (GameData.socketId !== '')) {
+      //push my data to players array
+      if ((GameData.players.length) === 0) {
         let me = {
-          id:GameData.id,
-          socketId:GameData.socketId,
+          id: GameData.id,
+          socketId: GameData.socketId,
           username: GameData.username,
           room: GameData.room,
           role: GameData.role,
-          finished:GameData.finished,
-          joined:true,
+          finished: GameData.finished,
+          joined: GameData.joined,
         }
         GameDataObj.players.push(me)
         setGameData(GameDataObj)
-      }
+        setGameData(old => ({ ...old, ...{ joined: true } }))
 
-      if(gamedataPlayersLength > 0){
-        GameData.socket.emit('message-from-react', withoutSocket)
       }
+      //create object game data withou socket because socket is function
+      const GameDataWithoutSocket = (({ socket, ...o }) => o)(GameData)
+      GameData.socket.emit('message-from-react', GameDataWithoutSocket)
     }
-    if(GameData.role === 'I joined'){
-      GameData.socket.emit('message-from-react', withoutSocket)
+    // when GameData change and i joined
+    if ((GameData.role === 'I joined') && (GameData.room !== '') && (GameData.username !== '') && (GameData.socketId !== '')) {
+      const GameDataWithoutSocket = (({ socket, ...o }) => o)(GameData)
+      GameData.socket.emit('message-from-react', GameDataWithoutSocket)
     }
-    // console.log(GameData)
-
-    return () => {}
   }, [GameData]);
 
 
 
+
+
+  //socket.io messages
+  useEffect(() => {
+    socket.on("message-from-nodejs", (value) => {
+      //new messages for creator
+      if (value.to === GameData.role && value.to === "I created") {
+        if (value.action === 'newPlayer') {
+          let newPlayerObj = {
+            id: value.message.id,
+            socketId: value.message.socketId,
+            username: value.message.username,
+            room: value.message.room,
+            role: value.message.role,
+            finished: value.message.finished,
+            joined: value.message.joined,
+          }
+          //check if id was pushed
+          let idPushed = false
+          GameData.players.forEach(e => {
+            if (e.id === value.message.id) {
+              idPushed = true
+            }
+            //change username when duplicate
+            //...
+          });
+
+          if (!idPushed) {
+            GameDataObj.players.push(newPlayerObj)
+            let players = GameDataObj.players
+            setGameData(old => ({ ...old, ...{ players: players } }))
+          }
+        }
+      }
+      //new messages for joined
+      if (value.to === GameData.role && value.to === "I joined") {
+        //set game/players
+        if (value.action === 'newData') {
+          GameDataObj.players = value.message.players
+          let players = GameDataObj.players
+          GameDataObj.game = value.message.game
+          let game = GameDataObj.game
+          setGameData(old => ({ ...old, ...{ players: players } }))
+          setGameData(old => ({ ...old, ...{ game: game } }))
+          setGameData(old => ({ ...old, ...{ joined: true } }))
+        }
+
+      }
+    })
+
+  }, [GameData]);
 
 
   return (
