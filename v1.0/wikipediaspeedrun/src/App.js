@@ -16,21 +16,22 @@ let GameDataObj = {
   role: "",
   finished: false,
   players: [],
+  clicked: [],
+  ready: false,
   game: {
     started: false,
     startArticle: '',
     finishArticle: '',
+    creatorSocketID: '',
     const: {
       searchUrl: 'https://en.wikipedia.org/w/api.php?action=opensearch&origin=*&format=json&search=',
-      contentUrl: 'https://en.wikipedia.org/w/index.php?title=',
-      afterContentUrl: '&action=render',
+      contentUrl: 'https://en.wikipedia.org/w/api.php?redirects=1&format=json&origin=*&action=parse&prop=text&page=',
     }
   },
   joined: false,
-  creatorID: '',
-
+  connected: true,
+  lastBuffer:'',
 }
-
 
 
 function App() {
@@ -44,7 +45,6 @@ function App() {
   //when GameData change
   useEffect(() => {
     GameDataObj = GameData
-    console.log(GameData)
     // when GameData change and i am creator
     if ((GameData.role === 'I created') && (GameData.room !== '') && (GameData.username !== '') && (GameData.socketId !== '')) {
       //push my data to players array
@@ -57,8 +57,12 @@ function App() {
           role: GameData.role,
           finished: GameData.finished,
           joined: GameData.joined,
+          clicked: GameData.clicked,
+          connected: GameData.connected,
+          ready: GameData.ready,
         }
         GameDataObj.players.push(me)
+        GameDataObj.game.creatorSocketID = GameData.socketId
         setGameData(GameDataObj)
         setGameData(old => ({ ...old, ...{ joined: true } }))
 
@@ -68,9 +72,10 @@ function App() {
       GameData.socket.emit('message-from-react', GameDataWithoutSocket)
     }
     // when GameData change and i joined
-    if ((GameData.role === 'I joined') && (GameData.room !== '') && (GameData.username !== '') && (GameData.socketId !== '')) {
-      const GameDataWithoutSocket = (({ socket, ...o }) => o)(GameData)
-      GameData.socket.emit('message-from-react', GameDataWithoutSocket)
+    if ((GameData.role === 'I joined') && (GameData.room !== '') && (GameData.username !== '') && (GameData.socketId !== '')&&(GameData.game.started === false)) {
+        const GameDataWithoutSocket = (({ socket, ...o }) => o)(GameData)
+        GameData.socket.emit('message-from-react', GameDataWithoutSocket)
+
     }
   }, [GameData]);
 
@@ -92,6 +97,9 @@ function App() {
             role: value.message.role,
             finished: value.message.finished,
             joined: value.message.joined,
+            clicked: value.message.clicked,
+            connected: value.message.connected,
+            ready: value.message.ready,
           }
           //check if id was pushed
           let idPushed = false
@@ -108,6 +116,25 @@ function App() {
             let players = GameDataObj.players
             setGameData(old => ({ ...old, ...{ players: players } }))
           }
+        }
+        if (value.action === 'newData') {
+          const index = GameDataObj.players.findIndex(object => {
+            return object.id === value.message.id;
+          });
+          GameDataObj.players[index] = {
+            id: value.message.id,
+            socketId: value.message.socketId,
+            username: value.message.username,
+            room: value.message.room,
+            role: value.message.role,
+            finished: value.message.finished,
+            joined: value.message.joined,
+            clicked: value.message.clicked,
+            connected: value.message.connected,
+            ready: value.message.ready,
+          }
+          let players = GameDataObj.players
+          setGameData(old => ({ ...old, ...{ players: players } }))
         }
       }
       //new messages for joined

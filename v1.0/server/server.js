@@ -32,6 +32,9 @@ io.on("connection", socket => {
                     socket.nsp.to(value.socketId).emit('message-from-nodejs', { to: 'I joined', action: 'whyIDidntJoin', message: 'Wrong room id' })
                 }
             }
+            if(value.game.started === true){
+                socket.to(value.room).emit('message-from-nodejs', { to: 'I created', action: 'newData', message: value })
+            }
 
         }
 

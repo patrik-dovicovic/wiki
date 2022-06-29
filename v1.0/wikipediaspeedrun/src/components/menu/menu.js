@@ -1,5 +1,6 @@
 import './menu.css'
 
+
 export default function Menu({ GameData, setGameData, GameDataObj }) {
 
     const setUsername = (id) => {
@@ -20,7 +21,8 @@ export default function Menu({ GameData, setGameData, GameDataObj }) {
 
     }
     const startGame = () => {
-        if (GameData.players.length > 1 && GameData.game.startArticle !== '' && GameData.game.finishArticle !== '') {
+        // if (GameData.players.length > 1 && GameData.game.startArticle !== '' && GameData.game.finishArticle !== '') {
+        if (true) {
             GameDataObj.game.started = true
             setGameData(old => ({ ...old, ...{ game: GameDataObj.game } }))
         }
@@ -52,7 +54,7 @@ export default function Menu({ GameData, setGameData, GameDataObj }) {
                 })
             }
         }
-
+        
         let url = GameData.game.const.searchUrl + value
         fetch(url)
             .then((response) => response.json())
