@@ -1,5 +1,6 @@
 import './menu.css'
 import { useState } from 'react'
+import React, { Component }  from 'react';
 
 export default function Menu({ GameData, setGameData, GameDataObj }) {
     const [menuMode, setMenuMode] = useState('initialMenu')

@@ -1,6 +1,7 @@
 import './game.css'
 import './wikipediaStyle.css'
 import { v4 as uniqueId } from 'uuid';
+import React, { Component }  from 'react';
 let lastBuffer = ''
 
 export default function Game({ GameData, setGameData, GameDataObj }) {
