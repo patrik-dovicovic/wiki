@@ -7,14 +7,15 @@
     <meta name="viewport" bcg="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-       @import url('https://fonts.googleapis.com/css2?family=Holtwood+One+SC&family=Monoton&family=Poppins:wght@300&display=swap');
-        </style>
+        @import url('https://fonts.googleapis.com/css2?family=Holtwood+One+SC&family=Monoton&family=Poppins:wght@300&display=swap');
+    </style>
     <style>
-        *{
+        * {
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
             font-weight: bold;
         }
+
         body {
             margin: 0;
         }
@@ -39,7 +40,8 @@
             background-repeat: no-repeat;
             opacity: 1;
         }
-        #o{
+
+        #o {
             width: 100vw;
             height: 100vh;
             position: absolute;
@@ -49,7 +51,8 @@
             opacity: 0.2;
             z-index: 1;
         }
-        #content{
+
+        #content {
             width: 100vw;
             height: 100vh;
             display: flex;
@@ -57,7 +60,8 @@
             align-items: center;
 
         }
-        .contentContainer{
+
+        .contentContainer {
             width: 650px;
             height: 550px;
             background-color: #E7E7E7;
@@ -70,7 +74,8 @@
             align-items: center;
             flex-direction: column;
         }
-        .contentContainer input{
+
+        .contentContainer input {
             outline: none;
             width: 90%;
             height: 15%;
@@ -79,13 +84,14 @@
             font-size: 35px;
             color: #777777;
             border-radius: 20px;
-            padding:10px 20px;
+            padding: 10px 20px;
             box-shadow: 1px 7px 5px -1px #888;
             background-color: white;
             text-align: center;
 
         }
-        .contentContainer button{
+
+        .contentContainer button {
             outline: none;
             width: 50%;
             display: inline-block;
@@ -95,11 +101,12 @@
             font-size: 45px;
             color: #777777;
             border-radius: 20px;
-            padding:10px 20px;
+            padding: 10px 20px;
             box-shadow: 1px 7px 5px -1px #888;
             background-color: white;
         }
-        .ModeSlider{
+
+        .ModeSlider {
             width: 50%;
             display: inline-block;
             height: 12%;
@@ -112,18 +119,21 @@
             align-items: center;
             position: relative;
         }
+
         .ModeSlider_left,
-        .ModeSlider_right{
+        .ModeSlider_right {
             width: 50%;
             height: 80%;
             font-size: 30px;
             color: #777777;
             position: relative;
         }
-        .ModeSlider_left{
+
+        .ModeSlider_left {
             color: white;
         }
-        #ModeSlider_checkboxJoin{
+
+        #ModeSlider_checkboxJoin {
             opacity: 0;
             position: absolute;
             top: 0;
@@ -132,21 +142,24 @@
             height: 100%;
             z-index: 200;
         }
-        #ModeSlider_checkboxJoin:checked  ~ #JC_div{
+
+        #ModeSlider_checkboxJoin:checked~#JC_div {
             color: red;
-            animation:  1s transformanimation_ModeSlider_checkboxJoin;
+            animation: 1s transformanimation_ModeSlider_checkboxJoin;
             animation-fill-mode: forwards;
         }
+
         @keyframes transformanimation_ModeSlider_checkboxJoin {
-            0%{
+            0% {
                 transform: translateX(0%);
             }
-            100%{
+
+            100% {
                 transform: translateX(-100%);
             }
         }
 
-        #ModeSlider_checkboxCreate{
+        #ModeSlider_checkboxCreate {
             opacity: 0;
             position: absolute;
             top: 0;
@@ -155,16 +168,19 @@
             height: 100%;
             z-index: 200;
         }
-        #ModeSlider_checkboxCreate:checked  ~ #JC_div{
+
+        #ModeSlider_checkboxCreate:checked~#JC_div {
             color: red;
-            animation:  1s transformanimation_ModeSlider_checkboxCreate;
+            animation: 1s transformanimation_ModeSlider_checkboxCreate;
             animation-fill-mode: forwards;
         }
+
         @keyframes transformanimation_ModeSlider_checkboxCreate {
-            0%{
+            0% {
                 transform: translateX(0%);
             }
-            100%{
+
+            100% {
                 transform: translateX(100%);
             }
         }
@@ -175,7 +191,7 @@
 
 
 
-        #JC_div{
+        #JC_div {
             width: calc(50% - 4px);
             height: calc(100% - 8px);
             background-color: #B6B6B6;
@@ -184,7 +200,6 @@
             left: 4px;
             border-radius: 20px;
         }
-
     </style>
 </head>
 
@@ -211,29 +226,31 @@
     </div>
 </body>
 <script>
-    count = 1500
-    // count = 0
+    // count = 1500
+    // // count = 0
 
-    function getRandomArbitrary(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+    // function getRandomArbitrary(min, max) {
+    //     return Math.random() * (max - min) + min;
+    // }
 
-    w = window.innerWidth
-    h = window.innerHeight
+    // w = window.innerWidth
+    // h = window.innerHeight
 
-    size = 100
+    // size = 100
 
-    let bcg = document.getElementById('bcg')
+    // let bcg = document.getElementById('bcg')
 
-    for (i = 0; i < count; i++) {
-        let newElement = document.createElement("div");
-        newElement.className += 'background_img'
-        newElement.style.top = getRandomArbitrary(-50,h)+'px'
-        newElement.style.left = getRandomArbitrary(-50,w)+'px'
-        newElement.style.width =size+'px'
-        newElement.style.height = size+'px'
-        document.getElementById('bcg').appendChild(newElement)
-    }
+    // for (i = 0; i < count; i++) {
+    //     let newElement = document.createElement("div");
+    //     newElement.className += 'background_img'
+    //     newElement.style.top = getRandomArbitrary(-50,h)+'px'
+    //     newElement.style.left = getRandomArbitrary(-50,w)+'px'
+    //     newElement.style.width =size+'px'
+    //     newElement.style.height = size+'px'
+    //     document.getElementById('bcg').appendChild(newElement)
+    // }
+
+   
 
 
 </script>

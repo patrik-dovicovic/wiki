@@ -3,6 +3,8 @@ import { v4 as uniqueId } from 'uuid';
 import Menu from './components/menu/menu'
 import Game from './components/game/game'
 import { useState, useEffect } from 'react';
+import React, { Component }  from 'react';
+
 const io = require("socket.io-client");
 
 const socket = io("http://localhost:4000", {});
@@ -30,7 +32,8 @@ let GameDataObj = {
   },
   joined: false,
   connected: true,
-  lastBuffer:'',
+  lastBuffer: '',
+  winner:'',
 }
 
 
@@ -44,7 +47,9 @@ function App() {
 
   //when GameData change
   useEffect(() => {
+
     GameDataObj = GameData
+    console.log(GameData)
     // when GameData change and i am creator
     if ((GameData.role === 'I created') && (GameData.room !== '') && (GameData.username !== '') && (GameData.socketId !== '')) {
       //push my data to players array
@@ -67,16 +72,24 @@ function App() {
         setGameData(old => ({ ...old, ...{ joined: true } }))
 
       }
-      //create object game data withou socket because socket is function
+      //create object game data without socket because socket is function
       const GameDataWithoutSocket = (({ socket, ...o }) => o)(GameData)
       GameData.socket.emit('message-from-react', GameDataWithoutSocket)
     }
     // when GameData change and i joined
-    if ((GameData.role === 'I joined') && (GameData.room !== '') && (GameData.username !== '') && (GameData.socketId !== '')&&(GameData.game.started === false)) {
-        const GameDataWithoutSocket = (({ socket, ...o }) => o)(GameData)
-        GameData.socket.emit('message-from-react', GameDataWithoutSocket)
+    if ((GameData.role === 'I joined') && (GameData.room !== '') && (GameData.username !== '') && (GameData.socketId !== '') && (GameData.game.started === false)) {
+      const GameDataWithoutSocket = (({ socket, ...o }) => o)(GameData)
+      GameData.socket.emit('message-from-react', GameDataWithoutSocket)
 
     }
+    //check if someone won
+    GameData.players.forEach(player => {
+      // console.log(player.clicked[player.clicked.length-1]," ",GameData.game.finishArticle.replaceAll("_"," "),(player.clicked[player.clicked.length-1] === GameData.game.finishArticle.replaceAll("_"," ")))
+      if(GameData.winner === '' && player.clicked.length !== 0 && player.clicked[player.clicked.length-1].replaceAll("_"," ") === GameData.game.finishArticle.replaceAll("_"," ")){
+        setGameData(old => ({ ...old, ...{ winner: player } }))
+        console.log("winner: ",player.username)
+      }
+    });
   }, [GameData]);
 
 
@@ -158,8 +171,13 @@ function App() {
 
   return (
     <div className="App">
-      <Menu GameData={GameData} setGameData={setGameData} GameDataObj={GameDataObj} />
-      <Game GameData={GameData} setGameData={setGameData} GameDataObj={GameDataObj} />
+      {GameData.game.started &&
+        <Game GameData={GameData} setGameData={setGameData} GameDataObj={GameDataObj} />
+      }
+      {!GameData.game.started &&
+        <Menu GameData={GameData} setGameData={setGameData} GameDataObj={GameDataObj} />
+      }
+
     </div>
   );
 }

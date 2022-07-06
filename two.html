@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+
+
+
+        .ell{   
+            position: relative;
+        }
+        .ell:hover:after {
+            content: attr(data-text);
+            overflow: visible;
+            text-overflow: inherit;
+            position: absolute; 
+            left: 0;
+            top: 0;
+            display: block;
+            background-color: white;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <p class="ell" data-text="hello world wikipedia two">dfkajdfsa</p> 
+      </div>
+</body>
+
+</html>
