@@ -76,6 +76,7 @@ export default function Game({ GameData, setGameData, GameDataObj }) {
                     link.getAttribute("href").startsWith("/wiki/Category:") ||
                     link.getAttribute("href").startsWith("/wiki/Talk:") ||
                     link.getAttribute("href").startsWith("//upload.wikimedia.org") ||
+                    link.getAttribute("href").startsWith("https://en.wiktionary.org/wiki/") ||
                     link.getAttribute("href").startsWith("/w/index.php?") ||
                     link.getAttribute("href").endsWith("&redlink=1")) {
                     let newElement = document.createElement("span");

@@ -3,7 +3,7 @@ import { v4 as uniqueId } from 'uuid';
 import Menu from './components/menu/menu'
 import Game from './components/game/game'
 import { useState, useEffect } from 'react';
-import React, { Component }  from 'react';
+import React, { Component } from 'react';
 
 const io = require("socket.io-client");
 
@@ -34,7 +34,7 @@ let GameDataObj = {
   joined: false,
   connected: true,
   lastBuffer: '',
-  winner:'',
+  winner: '',
 }
 
 
@@ -86,9 +86,9 @@ function App() {
     //check if someone won
     GameData.players.forEach(player => {
       // console.log(player.clicked[player.clicked.length-1]," ",GameData.game.finishArticle.replaceAll("_"," "),(player.clicked[player.clicked.length-1] === GameData.game.finishArticle.replaceAll("_"," ")))
-      if(GameData.winner === '' && player.clicked.length !== 0 && player.clicked[player.clicked.length-1].replaceAll("_"," ") === GameData.game.finishArticle.replaceAll("_"," ")){
+      if (GameData.winner === '' && player.clicked.length !== 0 && player.clicked[player.clicked.length - 1].replaceAll("_", " ") === GameData.game.finishArticle.replaceAll("_", " ")) {
         setGameData(old => ({ ...old, ...{ winner: player } }))
-        console.log("winner: ",player.username)
+        console.log("winner: ", player.username)
       }
     });
   }, [GameData]);
@@ -171,15 +171,22 @@ function App() {
 
 
   return (
-    <div className="App">
-      {GameData.game.started &&
-        <Game GameData={GameData} setGameData={setGameData} GameDataObj={GameDataObj} />
+    <>
+      {window.innerWidth >= 1400 &&
+        <div className="App">
+          {GameData.game.started &&
+            <Game GameData={GameData} setGameData={setGameData} GameDataObj={GameDataObj} />
+          }
+          {!GameData.game.started &&
+            <Menu GameData={GameData} setGameData={setGameData} GameDataObj={GameDataObj} />
+          }
+        </div>
       }
-      {!GameData.game.started &&
-        <Menu GameData={GameData} setGameData={setGameData} GameDataObj={GameDataObj} />
+      {window.innerWidth < 1400 &&
+        <h4 style={{marginLeft:"20px"}}>For better experience please use computer.</h4>
       }
+    </>
 
-    </div>
   );
 }
 
