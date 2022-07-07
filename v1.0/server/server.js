@@ -1,4 +1,4 @@
-var colors = require('colors');
+// var colors = require('colors');
 const io = require('socket.io')(4000, {
     cors: {
         origin: '*'
@@ -15,7 +15,7 @@ function getActiveRooms() {
 
 io.on("connection", socket => {
     socket.on("message-from-react", (value) => {
-        console.log("message from react",value)
+        // console.log("message from react",value)
         if (value.role === 'I created') {
             if(value.players.length === 1){
                 socket.join(value.room)
