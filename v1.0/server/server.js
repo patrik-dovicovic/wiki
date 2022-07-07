@@ -1,23 +1,29 @@
-// var colors = require('colors');
-const express = require('express')
-const app = express()
 const path = require('path');
-const cors = require('cors');
-
-app.use(cors());
-app.use(express.static(path.join(__dirname, "public")))
-app.use(express.json());
-app.listen(process.env.PORT || 80);
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server, {
+        cors:{
+            origin: '*'
+        }
+    });
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/', 'index.html'));
 });
 
-const io = require('socket.io')(4000, {
-    cors: {
-        origin: '*'
-    }
-})
+server.listen(80, () => {
+  console.log('listening on *:80');
+});
+
+
+// const io = require('socket.io')(5000, {
+//     cors: {
+//         origin: '*'
+//     }
+// })
 
 function getActiveRooms() {
     const arr = Array.from(io.sockets.adapter.rooms);
