@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 const io = require("socket.io-client");
 
 // const socket = io.connect("http://localhost:5000", {});
-const socket = io.connect("http://wikipedia-speedrun-nodejs.nw.r.appspot.com", {});
+const socket = io.connect("https://wikipedia-speedrun-nodejs.nw.r.appspot.com", {});
 
 let GameDataObj = {
   id: uniqueId(),
